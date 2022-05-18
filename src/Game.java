@@ -11,16 +11,20 @@ public class Game {
   private int timesGet;
   private int timesAvoid;
   private String userPic = "images/user.gif";
+  private String redT = "images/red.png";
+  private String blackT = "images/black.png";
   
   public Game() {
 
-    grid = new Grid(5, 10);
+    grid = new Grid(8, 8);
     userRow = 3;
     msElapsed = 0;
     timesGet = 0;
     timesAvoid = 0;
     updateTitle();
-    grid.setImage(new Location(userRow, 0), userPic);
+    setBG();
+    
+    
   }
   
   public void play() {
@@ -87,6 +91,41 @@ public class Game {
   public boolean isGameOver() {
     return false;
   }
+  
+  public boolean isRed(String tile){
+        return tile.equals(redT);
+    }
+  
+  public void setBG(){
+    Location prev = new Location(0, 0);
+    grid.setImage(prev, redT);
+    for(int r = 0; r < 8; r++){
+      for(int c = 0; c < 8; c++){
+        if (r != 0 && c == 0 && isRed(grid.getImage(prev))){
+        prev = new Location(r, c);
+        grid.setImage(prev, blackT);
+        }
+        else if (r != 0 && c == 0 && !isRed(grid.getImage(prev))) {
+          prev = new Location(r, c);
+          grid.setImage(prev, redT);
+          }
+        else if( c != 0 && isRed(grid.getImage(prev))){
+          prev = new Location(r,c);
+          grid.setImage(prev, blackT);
+          if(c == 7) prev = new Location(r, 0);
+        }
+        else if( c != 0 && !isRed(grid.getImage(prev))){
+          prev = new Location(r,c);
+          grid.setImage(prev, redT);
+          if(c == 7) prev = new Location(r, 0);
+        }
+      }
+    }
     
+  }
 
+
+
+
+  
 }
