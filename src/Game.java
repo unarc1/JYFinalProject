@@ -99,40 +99,25 @@ public class Game {
     }
   
   public void setBG(){
-    Location prev = new Location(0, 0);
-    grid.setImage(prev, redT);
+    //Location prev = new Location(0, 0);
+    grid.setImage(new Location(0,0) , redT);
     for(int r = 0; r < 8; r++){
       for(int c = 0; c < 8; c++){
-        if (r != 0 && c == 0 && isRed(grid.getImage(prev))){
-          prev = new Location(r, c);
-          grid.setImage(prev, blackT);
-        }
-        else if (r != 0 && c == 0 && !isRed(grid.getImage(prev))) {
-          prev = new Location(r, c);
-          grid.setImage(prev, redT);
-          }
-        else if( c != 0 && isRed(grid.getImage(prev))){
-          prev = new Location(r,c);
-          grid.setImage(prev, blackT);
-        } 
-        else if( c != 0 && !isRed(grid.getImage(prev))){
-          prev = new Location(r,c);
-          grid.setImage(prev, redT);
-        }
-        if (c == 7) prev = new Location(r, 0);
+        if(r != 0 && c==0 && isRed(grid.getImage(new Location(r-1,c)))) grid.setImage(new Location(r,c), blackT);
+        else if(r != 0 && c==0 && !isRed(grid.getImage(new Location(r-1,c)))) grid.setImage(new Location(r,c), redT);
+        else if(c != 0 && isRed(grid.getImage(new Location(r,c-1)))) grid.setImage(new Location(r,c), blackT);
+        else if(c != 0 && !isRed(grid.getImage(new Location(r,c-1)))) grid.setImage(new Location(r,c), redT);
       }
     }
     
   }
   
   public void setPiece(){
-    Location prev = new Location(0, 1);
     for(int r = 0; r < 8; r++){
       for(int c = 0; c < 8; c++){
-        prev = new Location(r,c);
-        if (r < 3 && !isRed(grid.getImage(prev))) grid.setImage(prev, blackP);
-        else if (r > 4 && !isRed(grid.getImage(prev))) grid.setImage(prev, redP);
-        }
+        if(r < 3 && !isRed(grid.getImage(new Location(r,c)))) grid.setImage(new Location(r,c), blackP);
+        else if(r > 4 && !isRed(grid.getImage(new Location(r,c)))) grid.setImage(new Location(r,c), redP);
+      } 
     }
   }
 
