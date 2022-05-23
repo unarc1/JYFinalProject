@@ -99,7 +99,6 @@ public class Game {
     }
   
   public void setBG(){
-    //Location prev = new Location(0, 0);
     grid.setImage(new Location(0,0) , redT);
     for(int r = 0; r < 8; r++){
       for(int c = 0; c < 8; c++){
