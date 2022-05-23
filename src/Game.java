@@ -13,6 +13,8 @@ public class Game {
   private String userPic = "images/user.gif";
   private String redT = "images/red.png";
   private String blackT = "images/black.png";
+  private String blackP = "images/blackpiece.png";
+  private String redP = "images/redpiece.png";
   
   public Game() {
 
@@ -23,7 +25,7 @@ public class Game {
     timesAvoid = 0;
     updateTitle();
     setBG();
-    
+    setPiece();
     
   }
   
@@ -102,8 +104,8 @@ public class Game {
     for(int r = 0; r < 8; r++){
       for(int c = 0; c < 8; c++){
         if (r != 0 && c == 0 && isRed(grid.getImage(prev))){
-        prev = new Location(r, c);
-        grid.setImage(prev, blackT);
+          prev = new Location(r, c);
+          grid.setImage(prev, blackT);
         }
         else if (r != 0 && c == 0 && !isRed(grid.getImage(prev))) {
           prev = new Location(r, c);
@@ -112,16 +114,26 @@ public class Game {
         else if( c != 0 && isRed(grid.getImage(prev))){
           prev = new Location(r,c);
           grid.setImage(prev, blackT);
-          if(c == 7) prev = new Location(r, 0);
-        }
+        } 
         else if( c != 0 && !isRed(grid.getImage(prev))){
           prev = new Location(r,c);
           grid.setImage(prev, redT);
-          if(c == 7) prev = new Location(r, 0);
         }
+        if (c == 7) prev = new Location(r, 0);
       }
     }
     
+  }
+  
+  public void setPiece(){
+    Location prev = new Location(0, 1);
+    for(int r = 0; r < 8; r++){
+      for(int c = 0; c < 8; c++){
+        prev = new Location(r,c);
+        if (r < 3 && !isRed(grid.getImage(prev))) grid.setImage(prev, blackP);
+        else if (r > 4 && !isRed(grid.getImage(prev))) grid.setImage(prev, redP);
+        }
+    }
   }
 
 
