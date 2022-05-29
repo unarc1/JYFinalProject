@@ -94,34 +94,51 @@ public class Game {
     return false;
   }
   
-  public boolean isRed(String tile){
-        return tile.equals(redT);
-    }
-  
   public void setBG(){
     grid.setImage(new Location(0,0) , redT);
-    for(int r = 0; r < 8; r++){
+    for(int r = 0; r < 8; r++)
       for(int c = 0; c < 8; c++){
-        if(r != 0 && c==0 && isRed(grid.getImage(new Location(r-1,c)))) grid.setImage(new Location(r,c), blackT);
-        else if(r != 0 && c==0 && !isRed(grid.getImage(new Location(r-1,c)))) grid.setImage(new Location(r,c), redT);
-        else if(c != 0 && isRed(grid.getImage(new Location(r,c-1)))) grid.setImage(new Location(r,c), blackT);
-        else if(c != 0 && !isRed(grid.getImage(new Location(r,c-1)))) grid.setImage(new Location(r,c), redT);
+        if((r+c)%2!=0) grid.setImage(new Location(r,c), blackT);
+        else grid.setImage(new Location(r,c), redT);
       }
-    }
-    
   }
+    
+  
   
   public void setPiece(){
-    for(int r = 0; r < 8; r++){
+    for(int r = 0; r < 8; r++)
       for(int c = 0; c < 8; c++){
-        if(r < 3 && !isRed(grid.getImage(new Location(r,c)))) grid.setImage(new Location(r,c), blackP);
-        else if(r > 4 && !isRed(grid.getImage(new Location(r,c)))) grid.setImage(new Location(r,c), redP);
+        if(r < 3 && (r+c)%2!=0) grid.setImage(new Location(r,c), blackP);
+        else if(r > 4 && (r+c)%2!=0) grid.setImage(new Location(r,c), redP);
       } 
-    }
   }
+  
+  public void isValidSimpleMove(){
+    
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
   
 }
+
+
+
