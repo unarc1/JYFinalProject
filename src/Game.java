@@ -26,8 +26,9 @@ public class Game {
     updateTitle();
     setBG();
     setPiece();
-    
-  }
+    while(true) HandleMouseClick();
+  }   
+  
   
   public void play() {
 
@@ -87,11 +88,23 @@ public class Game {
   }
   
   public void updateTitle() {
-    grid.setTitle("Game:  " + getScore());
+    grid.setTitle("Checkers  " + getScore());
   }
   
   public boolean isGameOver() {
-    return false;
+    int cRed = 0;
+    int cBlack = 0;
+    for(int r = 0; r < 8; r++)
+      for(int c = 0; c < 8; c++){
+        if(grid.getImage(new Location(r,c)) == redP) cRed++;
+        if(grid.getImage(new Location(r,c)) == blackP) cBlack++;
+      }
+    if(cRed == 0 || cBlack == 0) return true;
+    else return false;
+  }
+  
+  public void isValidSimpleMove(){
+    
   }
   
   public void setBG(){
@@ -103,8 +116,6 @@ public class Game {
       }
   }
     
-  
-  
   public void setPiece(){
     for(int r = 0; r < 8; r++)
       for(int c = 0; c < 8; c++){
@@ -112,10 +123,30 @@ public class Game {
         else if(r > 4 && (r+c)%2!=0) grid.setImage(new Location(r,c), redP);
       } 
   }
-  
-  public void isValidSimpleMove(){
+
+  public void HandleMouseClick(){
+
+    
+    Location first = grid.waitForClick();
+    Location second = grid.waitForClick();
+    if(grid.getImage(first).equals(blackP)){
+      if(grid.getImage(second).equals(blackT)) {
+        grid.setImage(second, blackP);
+        grid.setImage(first, blackT);
+      }
+    }
+    else if(grid.getImage(first).equals(redP)){
+      if(grid.getImage(second).equals(blackT)) {
+        grid.setImage(second, redP);
+        grid.setImage(first, blackT);
+      }
+    }
+    
     
   }
+  
+  
+  
 
 
 
