@@ -125,24 +125,28 @@ public class Game {
   }
 
   public void HandleMouseClick(){
-
     
     Location first = grid.waitForClick();
-    Location second = grid.waitForClick();
+    
+    while(grid.getImage(first).equals(blackP) || grid.getImage(first).equals(redP)){
+    
     if(grid.getImage(first).equals(blackP)){
-      if(grid.getImage(second).equals(blackT)) {
+      Location second = grid.waitForClick();
+      if(grid.getImage(second).equals(blackT)){
         grid.setImage(second, blackP);
         grid.setImage(first, blackT);
       }
     }
-    else if(grid.getImage(first).equals(redP)){
-      if(grid.getImage(second).equals(blackT)) {
+    
+    if(grid.getImage(first).equals(redP)){
+      Location second = grid.waitForClick();
+      if(grid.getImage(second).equals(blackT)){
         grid.setImage(second, redP);
         grid.setImage(first, blackT);
       }
     }
-    
-    
+    first = grid.waitForClick();
+    }
   }
   
   

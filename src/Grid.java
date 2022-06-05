@@ -82,7 +82,7 @@ public class Grid extends JComponent implements KeyListener, MouseListener
 		lastLocationClicked = null;
 		return loc;
 	}
-
+  
 	public Location waitForClick() {
 		while (true) {
 			final Location clicked = this.checkLastLocationClicked();
