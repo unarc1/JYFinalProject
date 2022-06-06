@@ -104,8 +104,29 @@ public class Game {
   }
   
   public void isValidSimpleMove(){
+<<<<<<< HEAD
+=======
     
   }
+  
+  public void setBG(){
+    grid.setImage(new Location(0,0) , redT);
+    for(int r = 0; r < 8; r++)
+      for(int c = 0; c < 8; c++){
+        if((r+c)%2!=0) grid.setImage(new Location(r,c), blackT);
+        else grid.setImage(new Location(r,c), redT);
+      }
+  }
+>>>>>>> origin/main
+    
+  public void setPiece(){
+    for(int r = 0; r < 8; r++)
+      for(int c = 0; c < 8; c++){
+        if(r < 3 && (r+c)%2!=0) grid.setImage(new Location(r,c), blackP);
+        else if(r > 4 && (r+c)%2!=0) grid.setImage(new Location(r,c), redP);
+      } 
+  }
+<<<<<<< HEAD
   
   public void setBG(){
     grid.setImage(new Location(0,0) , redT);
@@ -195,6 +216,8 @@ public class Game {
 
 
 =======
+=======
+>>>>>>> origin/main
 
   public void handleMouseClick(){
 
@@ -248,5 +271,8 @@ public class Game {
 }
 
 
+<<<<<<< HEAD
+>>>>>>> origin/main
+=======
 >>>>>>> origin/main
 
