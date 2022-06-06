@@ -26,7 +26,7 @@ public class Game {
     updateTitle();
     setBG();
     setPiece();
-    while(true) HandleMouseClick();
+    while(true) handleMouseClick();
   }   
   
   
@@ -123,6 +123,24 @@ public class Game {
         else if(r > 4 && (r+c)%2!=0) grid.setImage(new Location(r,c), redP);
       } 
   }
+<<<<<<< HEAD
+  
+  public void setBG(){
+    grid.setImage(new Location(0,0) , redT);
+    for(int r = 0; r < 8; r++)
+      for(int c = 0; c < 8; c++){
+        if((r+c)%2!=0) grid.setImage(new Location(r,c), blackT);
+        else grid.setImage(new Location(r,c), redT);
+      }
+  }
+    
+  public void setPiece(){
+    for(int r = 0; r < 8; r++)
+      for(int c = 0; c < 8; c++){
+        if(r < 3 && (r+c)%2!=0) grid.setImage(new Location(r,c), blackP);
+        else if(r > 4 && (r+c)%2!=0) grid.setImage(new Location(r,c), redP);
+      } 
+  }
 
   public void HandleMouseClick(){
     
@@ -176,4 +194,59 @@ public class Game {
 }
 
 
+=======
+
+  public void handleMouseClick(){
+
+    
+    Location first = grid.waitForClick();
+    Location second = grid.waitForClick();
+
+    //Move black piece to empty square
+    if(grid.getImage(first).equals(blackP)){
+      if(grid.getImage(second).equals(blackT)) {
+        grid.setImage(second, blackP);
+        grid.setImage(first, blackT);
+      }
+    }
+
+    //Move red piece to empty square
+    else if(grid.getImage(first).equals(redP)){
+      if(grid.getImage(second).equals(blackT)) {
+        grid.setImage(second, redP);
+        grid.setImage(first, blackT);
+      }
+    }
+    
+    
+  }
+  
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+}
+
+
+>>>>>>> origin/main
 
