@@ -127,7 +127,7 @@ public class Game {
     }
   }
   
-  public void HandleMouseClick(){
+  public void handleMouseClick(){
     
     Location first = grid.waitForClick();
     
@@ -149,28 +149,6 @@ public class Game {
         }
       }
       first = grid.waitForClick();
-    }
-  }
-  
-  public void handleMouseClick(){
-
-    Location first = grid.waitForClick();
-    Location second = grid.waitForClick();
-
-    //Move black piece to empty square
-    if(grid.getImage(first).equals(blackP)){
-      if(grid.getImage(second).equals(blackT)) {
-        grid.setImage(second, blackP);
-        grid.setImage(first, blackT);
-      }
-    }
-
-    //Move red piece to empty square
-    else if(grid.getImage(first).equals(redP)){
-      if(grid.getImage(second).equals(blackT)) {
-        grid.setImage(second, redP);
-        grid.setImage(first, blackT);
-      }
     }
   }
 
