@@ -1,8 +1,8 @@
 /*
- * Updated version of Grid class
- * Date 6/18/2020
- * Includes ability to move and scale the background image
- * Includes ability to add a picture to multiple cells
+ * Grid class
+ * 6/6/22	Cells resize to fit the window frame
+ * 6/8/22	Fixed issue if null or empty String image loaded
+ * 6/9/22	Adjusted cell heights to account for 30 pixel title bar height
  */
 
 import java.awt.*;
@@ -17,6 +17,12 @@ public class Grid extends JComponent implements KeyListener, MouseListener
 {
 	private Cell[][] cells;
 	private JFrame frame;
+	private int frameHeight = 600;
+	private int frameWidth = 800;
+	private int titleHeight = 30;
+	private boolean isFullScreen = false;
+	private int cellHeight;
+	private int cellWidth;
 	private int lastKeyPressed;
 	private Location lastLocationClicked;
 	private BufferedImage backgroundImage;
@@ -62,17 +68,21 @@ public class Grid extends JComponent implements KeyListener, MouseListener
 		return cells[0].length;
 	}
 
-	public boolean isValid(final Location loc) {
-		final int row = loc.getRow();
-		final int col = loc.getCol();
-		return 0 <= row && row < getNumRows() && 0 <= col && col < getNumCols();
+	public boolean isValid(final Location loc){
+		if(loc!=null){
+			final int row = loc.getRow();
+			final int col = loc.getCol();
+			return 0 <= row && row < getNumRows() && 0 <= col && col < getNumCols();
+		} else {
+			return false;
+		}
 	}
 
 		// returns -1 if no key pressed since last call.
 	// otherwise returns the code for the last key pressed.
 	public int checkLastKeyPressed() {
 		final int key = lastKeyPressed;
-		lastKeyPressed = -1;
+		lastKeyPressed=-1;
 		return key;
 	}
 
@@ -82,15 +92,15 @@ public class Grid extends JComponent implements KeyListener, MouseListener
 		lastLocationClicked = null;
 		return loc;
 	}
-  
+
 	public Location waitForClick() {
 		while (true) {
 			final Location clicked = this.checkLastLocationClicked();
 			if (clicked != null) {
-				System.out.print("\n"+clicked.getRow() + "," + clicked.getCol());
-				return clicked;
+				System.out.print("Row:" + (clicked.getRow()) + " Col:" + (clicked.getCol())+ "\n");
+				Location button = new Location(clicked.getRow(), clicked.getCol());
+				return button;
 			} else {
-				//System.out.print("NOT CLICKED");
 				System.out.print(".");
 				Grid.pause(100);
 			}
@@ -111,6 +121,11 @@ public class Grid extends JComponent implements KeyListener, MouseListener
 
 	public void fullscreen() {
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		this.frameWidth = (int) screenSize.getWidth();
+		this.frameHeight = (int) (screenSize.getHeight() - titleHeight);
+
+		isFullScreen = true;
 	}
 
 	public void close() {
@@ -246,13 +261,6 @@ public class Grid extends JComponent implements KeyListener, MouseListener
 	}
 
 
-
-
-
-
-
-
-
 	// ------------------ HELPER METHODS -----------------//
 	public void load(String imageFileName) {
 		showFullImage(loadImage(imageFileName));
@@ -277,33 +285,55 @@ public class Grid extends JComponent implements KeyListener, MouseListener
 		lastLocationClicked = null;
 
 		cells = new Cell[numRows][numCols];
+
 		for (int row = 0; row < numRows; row++) {
 			for (int col = 0; col < numCols; col++)
 				cells[row][col] = new Cell();
 		}
 
 		frame = new JFrame("Grid");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.addKeyListener(this);
+		frame.addMouseListener(this);
 
-		int cellSize = Math.max(Math.min(500 / getNumRows(), 500 / getNumCols()), 1);
-		setPreferredSize(new Dimension(cellSize * numCols, cellSize * numRows));
-		addMouseListener(this);
+		System.out.println("cells setup with : " + numRows + "," + numCols);
+		//System.out.println(cells.length + "," + cells[0].length);
+		//System.out.println(getNumRows() + "," + getNumCols());
+		//System.out.println(getCellHeight() + "," + getCellWidth());
+
+		if(!isFullScreen){
+			int cellSize = Math.max(Math.min(frameHeight / getNumRows(), frameWidth / getNumCols()), 1);
+			cellHeight = frameHeight / getNumRows();
+			cellWidth = frameWidth / getNumCols();
+			frame.setPreferredSize(new Dimension(cellSize * numCols, cellSize * numRows));
+		} else {
+			frameHeight = getUsableFrameHeight();
+			frameWidth = frame.getWidth();
+			cellHeight = frameHeight / getNumRows();
+			cellWidth = frameWidth / getNumCols();
+		}
+
 		frame.getContentPane().add(this);
-
-		frame.pack();
 		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.pack();
+
 	}
 
 	private BufferedImage loadImage(String imageFileName) {
-		final URL url = getClass().getResource(imageFileName);
-		if (url == null) {
-			throw new RuntimeException("cannot find file:  " + imageFileName);
-		}
-		try {
-			return ImageIO.read(url);
-		} catch (IOException e) {
-			throw new RuntimeException("unable to read from file:  " + imageFileName);
+		
+		if(imageFileName == null || "".equals(imageFileName)){
+			System.out.println("Image is null or \"\"");
+			return null;
+		} else{
+			final URL url = getClass().getResource(imageFileName);
+			if (url == null) {
+				throw new RuntimeException("cannot find file:  " + imageFileName);
+			}
+			try {
+				return ImageIO.read(url);
+			} catch (IOException e) {
+				throw new RuntimeException("unable to read from file:  " + imageFileName);
+			}
 		}
 	}
 
@@ -324,10 +354,24 @@ public class Grid extends JComponent implements KeyListener, MouseListener
 		repaint();
 	}
 
-	private int getCellSize() {
-		final int cellWidth = getWidth() / getNumCols();
-		final int cellHeight = getHeight() / getNumRows();
-		return Math.min(cellWidth, cellHeight);
+	// private int getCellSize() {
+	// 	final int cellWidth = getWidth() / getNumCols();
+	// 	final int cellHeight = getHeight() / getNumRows();
+	// 	return Math.min(cellWidth, cellHeight);
+	// }
+
+	private int getCellHeight(){
+		//System.out.println("fh: " + frame.getHeight());
+		return getUsableFrameHeight() / getNumRows();
+	}
+
+	private int getUsableFrameHeight(){
+		return frame.getHeight() - this.titleHeight;
+	}
+
+	private int getCellWidth(){
+		//System.out.println("fw: " + frame.getWidth());
+		return frame.getWidth() / getNumCols();
 	}
 
 	private static java.awt.Color toJavaColor(final Color color) {
@@ -336,12 +380,13 @@ public class Grid extends JComponent implements KeyListener, MouseListener
 
 	public void paintComponent(final Graphics g) {
 		
-		int cellSize = getCellSize();
+		cellHeight = getCellHeight();
+		cellWidth = getCellWidth();
 		
 		//set background picture
 		if(bgSet) {
 			final int bgWidth = (int) (frame.getWidth()*xScale);
-			final int bgHeight = (int) (frame.getHeight()*yScale);
+			final int bgHeight = (int) (getUsableFrameHeight()*yScale);
 			g.drawImage(backgroundImage, xOffset, yOffset, bgWidth,bgHeight,null);
 			//g.drawImage(backgroundImage,0,0,frame.getWidth(),frame.getHeight(),null);
 		}
@@ -360,8 +405,8 @@ public class Grid extends JComponent implements KeyListener, MouseListener
 
 				int xCells = mcImage.getMcCols();
 				int yCells = mcImage.getMcRows();
-				int mciWidth = xCells * cellSize;
-				int mciHeight = yCells * cellSize;
+				int mciWidth = xCells * cellWidth;
+				int mciHeight = yCells * cellHeight;
 
 				System.out.print("xcells:"+xCells);
 				System.out.print("\tycells:"+yCells);
@@ -374,8 +419,8 @@ public class Grid extends JComponent implements KeyListener, MouseListener
 				int yStartRow = startLoc.getRow();
 				int xStartCol = startLoc.getCol();
 
-				int xStartPixel = xStartCol * cellSize;
-				int yStartPixel = yStartRow * cellSize;
+				int xStartPixel = xStartCol * cellWidth;
+				int yStartPixel = yStartRow * cellHeight + titleHeight;
 
 				int drawHeight = mciHeight;
 				int drawWidth = mciWidth;
@@ -415,14 +460,14 @@ public class Grid extends JComponent implements KeyListener, MouseListener
 
 				Location loc = new Location(row, col);
 				Cell cell = cells[loc.getRow()][loc.getCol()];
-				int x = col * cellSize;		//start pixel of each Cell
-				int y = row * cellSize;
+				int x = col * cellWidth;		//start pixel of each Cell
+				int y = row * cellHeight;
 
 				//Fill Cells with Color
 				final Color color = cell.getFillColor();
 				g.setColor(toJavaColor(color));
 				if(!bgSet && !cells[row][col].isCoveredWithPic()){
-					g.fillRect(x, y, cellSize, cellSize);
+					g.fillRect(x, y, cellWidth, cellHeight);
 				}
 
 				//Fill Cells with Location images
@@ -436,11 +481,11 @@ public class Grid extends JComponent implements KeyListener, MouseListener
 						final int width =  image.getWidth(null);
 						final int height = image.getHeight(null);
 						if (width > height)	{
-							final int drawHeight = cellSize * height / width;
-							g.drawImage(image, x, y + (cellSize - drawHeight) / 2, cellSize, drawHeight, null);
+							final int drawHeight = cellHeight * height / width;
+							g.drawImage(image, x, y + (cellHeight - drawHeight) / 2, cellHeight, drawHeight, null);
 						} else {
-							final int drawWidth = cellSize * width / height;
-							g.drawImage(image, x + (cellSize - drawWidth) / 2, y, drawWidth, cellSize, null);
+							final int drawWidth = cellWidth * width / height;
+							g.drawImage(image, x + (cellWidth - drawWidth) / 2, y, drawWidth, cellWidth, null);
 						}
 					}
 				}
@@ -449,7 +494,7 @@ public class Grid extends JComponent implements KeyListener, MouseListener
 				if (cell.getOutlineColor()!=null){
 					final Color oc = cell.getOutlineColor();
 					g.setColor(toJavaColor(oc));
-					g.drawRect(x, y, cellSize, cellSize);
+					g.drawRect(x, y, cellWidth, cellHeight);
 				}
 			}
 		}
@@ -460,11 +505,15 @@ public class Grid extends JComponent implements KeyListener, MouseListener
 	}
 
 	public void mousePressed(final MouseEvent e) {
-		final int cellSize = getCellSize();
-		final int row = e.getY() / cellSize;
+		final int cellWidth = getCellWidth();
+		final int cellHeight = getCellHeight();
+
+		final int row = (e.getY()-titleHeight) / cellHeight;
+		//System.out.println("ey" + e.getY() + "\tch: " + cellHeight + "\tey/ch: " + e.getY()/cellHeight);
 		if (row < 0 || row >= getNumRows())
 			return;
-		final int col = e.getX() / cellSize;
+
+		final int col = e.getX() / cellWidth;
 		if (col < 0 || col >= getNumCols())
 			return;
 		lastLocationClicked = new Location(row, col);
