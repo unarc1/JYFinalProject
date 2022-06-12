@@ -238,6 +238,12 @@ public class Grid extends JComponent implements KeyListener, MouseListener
 		return cells[loc.getRow()][loc.getCol()].getImageFileName();
 	}
 
+  public Cell getCell(final Location loc) {
+		if (!isValid(loc))
+			throw new RuntimeException("cannot get image for invalid location " + loc);
+		return cells[loc.getRow()][loc.getCol()];
+	}
+
 	public void setOutlineColor(final Location loc, final Color oc) {
 		if (!isValid(loc))
 			throw new RuntimeException("cannot set outline for invalid location " + loc);

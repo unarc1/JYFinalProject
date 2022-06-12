@@ -11,8 +11,7 @@ public class Game {
   private int timesGet;
   private int timesAvoid;
   private String userPic = "images/user.gif";
-  private String redT = "images/red.png";
-  private String blackT = "images/black.png";
+  
   private String blackP = "images/blackpiece.png";
   private String redP = "images/redpiece.png";
   
@@ -26,7 +25,9 @@ public class Game {
     updateTitle();
     setBG();
     setPiece();
+    System.out.println(Piece.random(1,3));
     while(true) handleMouseClick();
+    
   }   
   
   
@@ -109,11 +110,11 @@ public class Game {
   }
   
   public void setBG(){
-    grid.setImage(new Location(0,0) , redT);
     for(int r = 0; r < 8; r++){
       for(int c = 0; c < 8; c++){
-        if((r+c)%2!=0) grid.setImage(new Location(r,c), blackT);
-        else grid.setImage(new Location(r,c), redT);
+        Location cell = new Location(r,c);
+        if((r+c)%2!=0) grid.setFillColor(cell, new Color(0,0,0));
+        else grid.setFillColor(cell, new Color(255,0,0));;
       }
     }
   }
@@ -121,8 +122,29 @@ public class Game {
   public void setPiece(){
     for(int r = 0; r < 8; r++){
       for(int c = 0; c < 8; c++){
-        if(r < 3 && (r+c)%2!=0) grid.setImage(new Location(r,c), blackP);
-        else if(r > 4 && (r+c)%2!=0) grid.setImage(new Location(r,c), redP);
+        int team = 0;
+        Location cell = new Location(r,c);
+        if(r < 3 && (r+c)%2!=0){
+          team = Piece.TEAM_BLACK;
+           grid.setImage(cell, blackP);
+        }
+        else if(r > 4 && (r+c)%2!=0){
+          team = Piece.TEAM_RED;
+          grid.setImage(cell, redP);
+        }
+        else continue; 
+        switch(Piece.random(1,3)){
+          case 1: 
+            grid.getCell(cell).setPiece(new Bishop(team));
+            break;
+          case 2:
+            grid.getCell(cell).setPiece(new Knight(team));
+            break;
+          case 3: 
+            grid.getCell(cell).setPiece(new Rook(team));
+            break;
+        };
+  
       } 
     }
   }
@@ -130,26 +152,23 @@ public class Game {
   public void handleMouseClick(){
     
     Location first = grid.waitForClick();
+    Cell cell = grid.getCell(first);
+    Color one = grid.getFillColor(first);
+    if(cell.getPiece() == null) return;
+    if(cell.getPiece()instanceof Rook) System.out.println("rook");
+    if(cell.getPiece()instanceof Bishop) System.out.println("Bish");
+    if(cell.getPiece()instanceof Knight) System.out.println("Knight");
+    grid.setFillColor(first, new Color(0, 0, 255));
     
-    while(grid.getImage(first).equals(blackP) || grid.getImage(first).equals(redP)){
-    
-      if(grid.getImage(first).equals(blackP)){
-        Location second = grid.waitForClick();
-        if(grid.getImage(second).equals(blackT)){
-          grid.setImage(second, blackP);
-          grid.setImage(first, blackT);
-        }
-      }
-    
-      if(grid.getImage(first).equals(redP)){
-        Location second = grid.waitForClick();
-        if(grid.getImage(second).equals(blackT)){
-          grid.setImage(second, redP);
-          grid.setImage(first, blackT);
-        }
-      }
-      first = grid.waitForClick();
+    Location second = grid.waitForClick();
+    if(second.equals(first)){
+      grid.setFillColor(first, one);
+      return;
     }
+    Color two = grid.getFillColor(second);
+    grid.getCell(first).getPiece().tryMove(grid, first, second);
+    
+    grid.setFillColor(first, one);
+    grid.setFillColor(second, two);
   }
-
 }

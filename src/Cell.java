@@ -8,6 +8,7 @@ public class Cell {
   private String imageFileName;
   private Color outlineColor;
   private boolean coveredPic;
+  private Piece piece = null;
   
   public Cell() {
     fillColor = new Color(0, 0, 0);
@@ -46,6 +47,14 @@ public class Cell {
   
   public boolean isCoveredWithPic() {
     return this.coveredPic;
-  }
+  }  
 
+  public Piece getPiece(){
+    return piece;
+  }
+  
+  public void setPiece(Piece p){
+    piece = p;
+  }
+  
 }  
