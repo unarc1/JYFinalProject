@@ -8,10 +8,12 @@ public abstract class Piece
   Piece(int team) {this.team = team;}
   
   protected void move(Grid grid, Location start, Location dest, Cell first, Cell second, String image){
-    Piece temp = first.getPiece();
-    first.setPiece(second.getPiece());
-    second.setPiece(temp);
-    grid.setImage(start, grid.getImage(dest));
+    Piece firstP = first.getPiece();
+    Piece secondP = second.getPiece();
+    if(secondP != null && sameTeam(firstP,secondP)) return;
+    second.setPiece(first.getPiece());
+    first.setPiece(null);
+    grid.setImage(start, null);
     grid.setImage(dest, image);
   }
   
@@ -20,5 +22,9 @@ public abstract class Piece
   public static int random(int low, int high){
     return (int)(Math.random() * (high-low+1) + low);
   }
-  
+
+  public static boolean sameTeam(Piece one, Piece two){
+    if(one.team == two.team) return true;
+    else return false;
+  }
 }

@@ -155,9 +155,6 @@ public class Game {
     Cell cell = grid.getCell(first);
     Color one = grid.getFillColor(first);
     if(cell.getPiece() == null) return;
-    if(cell.getPiece()instanceof Rook) System.out.println("rook");
-    if(cell.getPiece()instanceof Bishop) System.out.println("Bish");
-    if(cell.getPiece()instanceof Knight) System.out.println("Knight");
     grid.setFillColor(first, new Color(0, 0, 255));
     
     Location second = grid.waitForClick();
