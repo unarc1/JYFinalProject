@@ -13,7 +13,9 @@ public class Game {
   private String userPic = "images/user.gif";
   private String blackP = "images/blackpiece.png";
   private String redP = "images/redpiece.png";
- 
+  private String rules = "Cheskers: Checkers on the outside, Chess on the inside.\n\nChesckers is a game where it appears like checkers.\nDifference is the pieces act like chess pieces.\nEach piece can either be a knight, bishop, or rook\n\nin every game, the amount of each piece you get will always be random.\nYou win by capturing (landing on) all your opponent’s pieces.\nThe game will end in a draw if no captures occur 17 moves from the last\ncapture.\n\nIf you haven’t played chess:\n\nThe rook can only move vertically and horizontally,\nwith no ability to jump over any pieces.\n\nThe bishop can only move diagonally, with no ability to jump over any pieces.\n\nThe knight may only move two squares vertically and one square horizontally\nor two squares horizontally and one square vertically (like an L shape),\nwith the ability to jump over pieces.";
+
+;
   
   public Game() {
 
@@ -27,7 +29,8 @@ public class Game {
     else grid.setTitle("turn: Red");               
     setBG();
     setPiece();
-    
+    grid.showMessageDialog(rules);
+;    
   }   
   
   
@@ -72,12 +75,12 @@ public class Game {
       }
     }
     if(cRed == 0 || cBlack == 0){ 
-      if(grid.turn == 0) grid.showMessageDialog("red wins");
-      if(grid.turn == 1) grid.showMessageDialog("black wins");
+      if(grid.turn == 0) grid.showMessageDialog("Red wins");
+      if(grid.turn == 1) grid.showMessageDialog("Black wins");
       return true;
     }             
-    else if(grid.turnC == 15){
-      grid.showMessageDialog("stalemate");
+    else if(grid.turnC == 17){
+      grid.showMessageDialog("Stalemate: no one wins");
       return true; 
     }
     else return false;

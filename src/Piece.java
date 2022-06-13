@@ -41,14 +41,12 @@ public abstract class Piece
   }
 
   public static boolean getPath(Grid grid, Location start, Location dest){
-    int row = Math.abs(dest.getRow() - start.getRow());
-    int col = Math.abs(dest.getCol() - start.getCol());
 
     int r = (dest.getRow() - start.getRow());
     int c = (dest.getCol() - start.getCol());
 
-    if(row != 0) r = r/row;
-    if(col != 0) c = c/col;
+    if(Math.abs(r) != 0) r = r/Math.abs(r);
+    if(Math.abs(c) != 0) c = c/Math.abs(c);
   
     Location locF = new Location(start.getRow()+r, start.getCol()+c);
       
