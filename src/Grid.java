@@ -34,8 +34,9 @@ public class Grid extends JComponent implements KeyListener, MouseListener
 	private int yOffset;
 	private double xScale;
 	private double yScale;
-	
-
+  int turnC = 0; 
+	int turn;
+  
 	public Grid(final int numRows, final int numCols) {
 		init(numRows, numCols);
 	}
@@ -240,7 +241,7 @@ public class Grid extends JComponent implements KeyListener, MouseListener
 
   public Cell getCell(final Location loc) {
 		if (!isValid(loc))
-			throw new RuntimeException("cannot get image for invalid location " + loc);
+			throw new RuntimeException("cannot get cell " + loc);
 		return cells[loc.getRow()][loc.getCol()];
 	}
 

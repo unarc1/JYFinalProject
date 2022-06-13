@@ -9,10 +9,8 @@ public class Knight extends Piece{
 	  if((row == 2 && col == 1) || (row == 1 && col == 2)){
       move(grid, start, dest, grid.getCell(start), grid.getCell(dest), grid.getImage(start));
       return true;
-      
     }  
-    else return false; 
-	  
+    else return false;
   }
 
   

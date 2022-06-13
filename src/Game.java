@@ -11,9 +11,9 @@ public class Game {
   private int timesGet;
   private int timesAvoid;
   private String userPic = "images/user.gif";
-  
   private String blackP = "images/blackpiece.png";
   private String redP = "images/redpiece.png";
+ 
   
   public Game() {
 
@@ -22,27 +22,17 @@ public class Game {
     msElapsed = 0;
     timesGet = 0;
     timesAvoid = 0;
-    updateTitle();
+    grid.turn = Piece.random(0,1);
+    if(grid.turn == 0) grid.setTitle("turn: Black");
+    else grid.setTitle("turn: Red");               
     setBG();
     setPiece();
-    System.out.println(Piece.random(1,3));
-    while(true) handleMouseClick();
     
   }   
   
   
   public void play() {
-
-    while (!isGameOver()) {
-      grid.pause(100);
-      handleKeyPress();
-      if (msElapsed % 300 == 0) {
-        scrollLeft();
-        populateRightEdge();
-      }
-      updateTitle();
-      msElapsed += 100;
-    }
+    while(!isGameOver()) handleMouseClick();
   }
   
   public void handleKeyPress(){
@@ -72,26 +62,6 @@ public class Game {
 
   }
   
-  public void populateRightEdge(){
-
-  }
-  
-  public void scrollLeft(){
-
-  }
-  
-  public void handleCollision(Location loc) {
-
-  }
-  
-  public int getScore() {
-    return 0;
-  }
-  
-  public void updateTitle() {
-    grid.setTitle("Checkers  " + getScore());
-  }
-  
   public boolean isGameOver() {
     int cRed = 0;
     int cBlack = 0;
@@ -101,12 +71,16 @@ public class Game {
         if(grid.getImage(new Location(r,c)) == blackP) cBlack++;
       }
     }
-    if(cRed == 0 || cBlack == 0) return true;
+    if(cRed == 0 || cBlack == 0){ 
+      if(grid.turn == 0) grid.showMessageDialog("red wins");
+      if(grid.turn == 1) grid.showMessageDialog("black wins");
+      return true;
+    }             
+    else if(grid.turnC == 15){
+      grid.showMessageDialog("stalemate");
+      return true; 
+    }
     else return false;
-  }
-  
-  public void isValidSimpleMove(){
-    
   }
   
   public void setBG(){
@@ -144,7 +118,6 @@ public class Game {
             grid.getCell(cell).setPiece(new Rook(team));
             break;
         };
-  
       } 
     }
   }

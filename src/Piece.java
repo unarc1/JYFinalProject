@@ -11,10 +11,22 @@ public abstract class Piece
     Piece firstP = first.getPiece();
     Piece secondP = second.getPiece();
     if(secondP != null && sameTeam(firstP,secondP)) return;
+    if(secondP != null && !sameTeam(firstP,secondP)) grid.turnC = 0;
+    if(grid.turn != firstP.team) return;
+    if(firstP.team == TEAM_RED){ 
+      grid.turn = TEAM_BLACK;
+      grid.setTitle("Turn: Black");
+    }
+    else{
+      grid.turn = TEAM_RED;
+      grid.setTitle("Turn: Red");
+    }
     second.setPiece(first.getPiece());
     first.setPiece(null);
     grid.setImage(start, null);
     grid.setImage(dest, image);
+    grid.turnC++;
+    
   }
   
   abstract boolean tryMove(Grid grid, Location current, Location dest);
@@ -27,4 +39,24 @@ public abstract class Piece
     if(one.team == two.team) return true;
     else return false;
   }
+
+  public static boolean getPath(Grid grid, Location start, Location dest){
+    int row = Math.abs(dest.getRow() - start.getRow());
+    int col = Math.abs(dest.getCol() - start.getCol());
+
+    int r = (dest.getRow() - start.getRow());
+    int c = (dest.getCol() - start.getCol());
+
+    if(row != 0) r = r/row;
+    if(col != 0) c = c/col;
+  
+    Location locF = new Location(start.getRow()+r, start.getCol()+c);
+      
+    while(!locF.equals(dest)){
+      if(grid.getCell(locF).getPiece() != null) return false; 
+      locF = new Location(locF.getRow()+r, locF.getCol()+c);
+    }
+    return true;
+  }
+  
 }

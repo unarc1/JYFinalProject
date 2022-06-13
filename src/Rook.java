@@ -7,14 +7,13 @@ public class Rook extends Piece{
     int col = Math.abs(start.getCol() - dest.getCol());
     
 	  if((row == 0 && col > 0) || (row > 0 && col == 0)){
-      move(grid, start, dest, grid.getCell(start), grid.getCell(dest), grid.getImage(start));
-      System.out.println(row + col);
-      return true;
+      if(getPath(grid,start,dest)){
+        move(grid, start, dest, grid.getCell(start), grid.getCell(dest), grid.getImage(start));
+        return true;
+      }
     }
-    else return false; 
-    
-	  
+    return false; 
   }
+}
 
   
-}
